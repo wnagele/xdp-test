@@ -50,7 +50,7 @@ async fn main() -> Result<(), anyhow::Error> {
     }
 
     let mut allow: HashMap<_, u32, u32> = HashMap::try_from(bpf.map_mut("ALLOW").unwrap())?;
-    allow.insert(u32::from(Ipv4Addr::new(193, 238, 159, 251)), 0, 0)?;
+    allow.insert(u32::from(Ipv4Addr::new(1, 1, 1, 1)), 0, 0)?;
 
     info!("Waiting for Ctrl-C...");
     signal::ctrl_c().await?;
