@@ -44,8 +44,10 @@ async fn main() -> Result<(), anyhow::Error> {
     }
     let program: &mut Xdp = bpf.program_mut("xdp_test").unwrap().try_into()?;
     program.load()?;
-    program.attach(&opt.iface, XdpFlags::default())
-        .context("failed to attach the XDP program with default flags - try changing XdpFlags::default() to XdpFlags::SKB_MODE")?;
+    if program.attach(&opt.iface, XdpFlags::default()).is_err() {
+        program.attach(&opt.iface, XdpFlags::SKB_MODE)
+            .context("Attaching with default and SKB flags failed!")?;
+    }
 
     let mut allow: HashMap<_, u32, u32> = HashMap::try_from(bpf.map_mut("ALLOW").unwrap())?;
     allow.insert(u32::from(Ipv4Addr::new(193, 238, 159, 251)), 0, 0)?;
